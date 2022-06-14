@@ -2,11 +2,6 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateEmploymentDto {
 
-  // @ApiPropertyOptional({
-  //   example: '회사_id',
-  // })
-  // companyId: string;
-
   @ApiPropertyOptional({
     example: '백엔드 주니어 개발자',
   })

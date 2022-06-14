@@ -5,8 +5,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from '../../loggermiddleware';
-import { Company } from '../item/entities/company.entity';
-import { CompanyModule } from '../item/employment.module';
+import { CompanyModule } from '../employment/employment.module';
 
 @Module({
   imports: [

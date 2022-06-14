@@ -1,26 +1,48 @@
 # wanted_pre_onboarding
-프리온보딩 백엔드 코스 3차 선발과제
+프리온보딩 백엔드 코스 3차 선발과제 / 염하늘 /
+- 최초 제출일 : 2022 / 06 / 15
+- Framework : Nest js (v 8.2.3)
+- Language : Node js (v17.9.1)
+- volta 로 고정 세팅 (pin) 한 값 package.json에서 확인 가능합니다.
 
-Framework : Nest js (v 8.2.3)
-Language : Node js (v17.9.1)
-volta 로 고정 세팅 (pin) 한 값 package.json에서 확인 가능
-
-### 실행
-yarn install
-yarn start:dev
+### 프로젝트 실행
+- git clone 'url 넣기...'
+- yarn install
+- yarn start:dev
 
 ### swagger 문서 (api 명세화)
-localhost:8082/apiDoc (포트 번호는 env/development.env 의 SERVER_PORT)
-api를 손쉽게 테스트할 수 있도록 세팅함.
+- localhost:8082/apiDoc (포트 번호는 env/development.env 의 SERVER_PORT) 에서 확인 가능합니다.
+- api를 손쉽게 테스트할 수 있도록 세팅하였습니다.
 
 ### 요구사항 분석 및 구현 과정
-- 기본적으로 entity는 회사 (Company) / 사용자 (User) 로 구성함.
+- 기본적으로 entity는 회사 (Company) / 사용자 (User) / 지원(application) 으로 구성됨.
+company - application - user 는 각각 one To Many / one To One 관계임. 
+why : 한 회사가 여러 채용공고를 낼 수 있고, 사용자는 한번만
+공고 지원 가능하므로. 외래키의 index 는 설정하지 않은 이유 : 데이터가 많아졌을 때의 조회 성능을 고려함.
 
-- 4-2 채용공고 검색 기능은 position (채용 포지션) 별로 검색되도록 설정하였으며
-주석 처리한 코드에는 그 외 회사명/국가/지역/사용기술도 검색 가능하도록 설정함.
-검색어 없이 보내면 전체 목록이 조회되며, 검색어에 해당하지 않는 키워드가 입력되면 빈 배열 형태로 return됨.
+- 0. 회사 정보를 등록합니다. (company)
+- 1. 등록된 회사 정보의 id를 입력하여 채용 공고를 등록합니다. (posting)
+## 로그인 절차는 생략하기에 해당 로직으로 구현 방향을 수정함. 
+- 2. 채용공고 id 로 수정합니다. (기능 구현 완료/response 정리 중)
+- 3. 채용공고 id 로 삭제합니다.
+- 4-2 채용공고 검색 기능은 position (채용 포지션) 별로 검색되도록 설정하였습니다.
+검색어 없이 보내면 전체 목록이 조회되며, 검색어에 해당하지 않는 키워드가 입력되면 빈 배열 형태로 return됩니다.
+- 5. 상세 정보 보기 (구현 중/dto 정리 중)
+- 6. 사용자는 채용공고에 1회만 지원 가능하기에 One To One 모델을 사용했습니다.
+- 또한 사용자가 채용공고에 지원하면, 해당 사용자의 id로 채용 공고의 userId가 변경되어 지원자:채용공고 간 1:1 관계를 유지할 수 있도록 처리하였습니다.
 
-- 단위 테스트는 현 제출 시점 6/15 22:30 기준 진행 X
+## ETC
+- 실 서비스에서와는 달리 회원가입/인증/로그인 등의 처리가 생략된 코드입니다.
+- Request 와 Response는 되도록 명확히 구분되도록 작성하였습니다.
+1. status Code : 200 / 201 에 해당하는 경우, 그 결과 값만 response로 보여집니다.
+2. error의 경우 어떤 error에 해당하는지 message도 함께 response로 확인 가능합니다.
+3. error-type 등은 enum 처리하였습니다.
+모두 http > dto > XXXX.dto 파일 형식으로 모듈화했습니다.
 
-- status Code : 200 / 201 에 해당하는 경우, 그 결과 값만 response로 보여지고 error의 경우 어떤 error에 해당하는지 message도 함께 response로 확인 가능함. 해당 response의 경우 자주 쓰이기에 http > dto > 0000.dto 파일 형식으로 모듈화함.
-
+## commit convention
+- ADD : 기능 신규 개발
+- MODIFY : 기존 기능 수정
+- REFACTOR : 기존 기능 개선
+- FIX : 버그 픽스
+- REMOVE : 불필요한 로직 제거
+- COMMENT : 코드 리뷰 반영 결과
