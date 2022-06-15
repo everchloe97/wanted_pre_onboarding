@@ -28,7 +28,7 @@ import { CompanyModule } from '../employment/employment.module';
           logging: true,
           autoLoadEntities: true,
           entities: [join(__dirname, '/**/*.entity.ts')],
-          synchronize: true,
+          synchronize: false,
         };
       },
     }),

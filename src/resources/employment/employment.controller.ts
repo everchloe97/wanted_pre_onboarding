@@ -15,7 +15,7 @@ import { GlobalException } from '../../http/exception.global';
 import { DefaultResponse } from '../../http/dto';
 import { CreateEmploymentDto } from './dto/create-employment.dto';
 import { FilterDto } from './dto/filter-employment.dto';
-import { ModifyEmploymentDto } from './dto/update-employment.dto';
+import { ModifyEmploymentDto } from './dto/modify-employment.dto';
 import { CreateCompanyDto } from './dto/create-company.dto';
 
 @ApiTags('Employment')

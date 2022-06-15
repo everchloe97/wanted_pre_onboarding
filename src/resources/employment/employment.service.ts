@@ -7,7 +7,7 @@ import { ErrorType } from '../../error/error-type.enum';
 import { FilterDto } from './dto/filter-employment.dto';
 import { Company } from './entities/company.entity';
 import { CreateEmploymentDto } from './dto/create-employment.dto';
-import { ModifyEmploymentDto } from './dto/update-employment.dto';
+import { ModifyEmploymentDto } from './dto/modify-employment.dto';
 import { Application } from './entities/application.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { User } from './entities/user.entity';
@@ -55,13 +55,11 @@ export class EmploymentService {
 
   // 2. 채용공고를 수정합니다.
   async modifyEmployment(postingId: number, modifyDto: ModifyEmploymentDto) {
-    const existPosting = await this.applicationRepository.findOne({
-      where: { id: postingId },
-    });
+    const existPosting = await this.applicationRepository.findOneBy({ id: postingId });
     if (existPosting) {
-      const result = await this.applicationRepository.update({ id: postingId }, modifyDto);
-
-      // response 정리
+      await this.applicationRepository.update({ id: postingId }, modifyDto);
+     const modifiendResult = await this.applicationRepository.findOneBy({id:postingId})
+     const result=  ResponseEmploymentDto.PostingResponse( modifiendResult)
       return result;
     } else throw ErrorResponse.error(ErrorType.NOT_FOUND);
   }
@@ -78,10 +76,27 @@ export class EmploymentService {
   // 4. 채용공고 목록을 가져옵니다. (4-1)
   async findAllIPosting() {
     const result = await this.applicationRepository.find({
-      relations: ['company'],
+      relations: ['company','company.application'],
     });
-    return result;
-  }
+
+    const resultDataList = [];
+    for (const item of result) {
+    const responseDto = new ResponseEmploymentDto();
+
+    responseDto.companyId = item.companyId;
+    responseDto.companyName = item.position;
+    responseDto.compensation = item.compensation;
+    responseDto.position = item.position;
+    //responseDto.content = item.content;
+    responseDto.tech = item.tech;
+    
+    responseDto.companyName = item.company.name
+    responseDto.country =  item.company.country
+    responseDto.region = item.company.region
+    resultDataList.push(responseDto)
+    }
+    return resultDataList
+} 
 
   // 4. 채용공고 목록을 가져옵니다. (4-2)
   async findSomePosting(filters: FilterDto) {
@@ -90,33 +105,54 @@ export class EmploymentService {
       where: { position: Like('%' + keyword + '%') },
       relations: ['company'],
     });
-    return result;
+
+    const resultDataList = [];
+    for (const item of result) {
+    const responseDto = new ResponseEmploymentDto();
+
+    responseDto.companyId = item.companyId;
+    responseDto.companyName = item.position;
+    responseDto.compensation = item.compensation;
+    responseDto.position = item.position;
+    //responseDto.content = item.content;
+    responseDto.tech = item.tech;
+    
+    responseDto.companyName = item.company.name
+    responseDto.country =  item.company.country
+    responseDto.region = item.company.region
+    resultDataList.push(responseDto)
+    }
+    return resultDataList
   }
 
   // 5. 채용 상세 페이지를 가져옵니다.
   async findOnePosting(postingId: number) {
-    const positingDetail = await this.applicationRepository.find({
+    const result = await this.applicationRepository.find({
       where: {
         id: postingId,
       },
       relations: ['company', 'company.application'],
     });
-    if (!positingDetail) throw ErrorResponse.error(ErrorType.NOT_FOUND);
+    if (!result) throw ErrorResponse.error(ErrorType.NOT_FOUND);
     else {
-      // data 가공
-
+      const resultDataList = [];
+      for (const item of result) {
       const responseDto = new ResponseEmploymentDto();
-      for (const item of positingDetail) {
-        responseDto.companyId = item.companyId;
-        responseDto.compensation = item.compensation;
-        responseDto.content = item.content; // 세부 내용 (추가)
-        responseDto.position = item.position;
-        responseDto.tech = item.tech;
-
-        //for
+  
+      responseDto.companyId = item.companyId;
+      responseDto.companyName = item.position;
+      responseDto.compensation = item.compensation;
+      responseDto.position = item.position;
+      responseDto.content = item.content;
+      responseDto.tech = item.tech;
+      
+      responseDto.companyName = item.company.name
+      responseDto.country =  item.company.country
+      responseDto.region = item.company.region
+      resultDataList.push(responseDto)
       }
+      return resultDataList
     }
-    return positingDetail;
   }
 
   // 6. 사용자는 채용공고에 지원합니다.
