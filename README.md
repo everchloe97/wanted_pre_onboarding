@@ -7,6 +7,7 @@
 
 ### 프로젝트 실행
     - git clone 'https://github.com/everchloe97/wanted_pre_onboarding'
+    - cd wanted_pre_onboarding
     - yarn install
     - yarn start:dev 
     - app module > synchronize : true (db setting)
